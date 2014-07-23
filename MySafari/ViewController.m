@@ -8,9 +8,11 @@
 
 #import "ViewController.h"
 
-@interface ViewController () 
+@interface ViewController () <UIWebViewDelegate, UITextFieldDelegate>
 @property (strong, nonatomic) IBOutlet UIWebView *myWebView;
 @property (strong, nonatomic) IBOutlet UITextField *myURLTextField;
+@property (strong, nonatomic) IBOutlet UIButton *backButton;
+@property (strong, nonatomic) IBOutlet UIButton *forwardButton;
 
 @end
 
@@ -19,8 +21,8 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    self.homepageUrlString = @"http://www.google.com";
-    [self loadUrlString:self.homepageUrlString];
+//    self.homepageUrlString = @"http://www.google.com";
+//    [self loadUrlString:self.homepageUrlString];
 }
 
 -(void)loadUrlString:(NSString *)urlString {
@@ -29,10 +31,9 @@
     [self.myWebView loadRequest:urlRequest];
 }
 
--(BOOL)textFieldShouldReturn:(UITextField *)myURLTextField {
-    NSString *urlString = myURLTextField.text;
-    [self loadUrlString:urlString];
-    [myURLTextField resignFirstResponder];
+-(BOOL)textFieldShouldReturn:(UITextField *)textField {
+    [self loadUrlString:textField.text];
+    [textField resignFirstResponder];
     return YES;
 }
 
@@ -42,6 +43,38 @@
 
 -(void)webViewDidFinishLoad:(UIWebView *)webView {
     NSLog(@"Loaded");
+    [self checkWebPageStateForButtons];
+}
+
+-(IBAction)onBackButtonPressed:(id)sender {
+    NSLog(@"Back button pressed");
+    [self.myWebView goBack];
+}
+
+-(IBAction)onForwardButtonPressed:(id)sender {
+    [self.myWebView goForward];
+}
+
+-(IBAction)onStopLoadingButtonPressed:(id)sender {
+    [self.myWebView stopLoading];
+}
+
+-(IBAction)onReloadButtonPressed:(id)sender {
+    [self.myWebView reload];
+}
+
+- (void) checkWebPageStateForButtons
+{
+    if ([self.myWebView canGoBack]) {
+        [self.backButton setEnabled:TRUE];
+    }else{
+        [self.backButton setEnabled:FALSE];
+    }
+    if ([self.myWebView canGoForward]) {
+        [self.forwardButton setEnabled:TRUE];
+    }else{
+        [self.forwardButton setEnabled:FALSE];
+    }
 }
 
 //-(void)webView:(UIWebView *)webView didFailLoadWithError:(NSError *)error {
