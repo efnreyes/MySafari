@@ -21,6 +21,7 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+    [self checkStatusForButtons];
 //    self.homepageUrlString = @"http://www.google.com";
 //    [self loadUrlString:self.homepageUrlString];
 }
@@ -43,7 +44,7 @@
 
 -(void)webViewDidFinishLoad:(UIWebView *)webView {
     NSLog(@"Loaded");
-    [self checkWebPageStateForButtons];
+    [self checkStatusForButtons];
 }
 
 -(IBAction)onBackButtonPressed:(id)sender {
@@ -63,16 +64,20 @@
     [self.myWebView reload];
 }
 
-- (void) checkWebPageStateForButtons
-{
+- (void) checkStatusForButtons {
     if ([self.myWebView canGoBack]) {
+        NSLog(@"canGoBack");
+        NSLog(@"%hhd", [self.myWebView canGoBack]);
         [self.backButton setEnabled:TRUE];
     }else{
+        NSLog(@"canNotGoBack");
         [self.backButton setEnabled:FALSE];
     }
     if ([self.myWebView canGoForward]) {
+        NSLog(@"canGoForward");
         [self.forwardButton setEnabled:TRUE];
     }else{
+        NSLog(@"canNotGoForward");
         [self.forwardButton setEnabled:FALSE];
     }
 }
