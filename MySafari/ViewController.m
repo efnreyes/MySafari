@@ -33,7 +33,7 @@
 }
 
 -(BOOL)textFieldShouldReturn:(UITextField *)textField {
-    [self loadUrlString:textField.text];
+    [self loadUrlString:[self checkUrl:textField.text]];
     [textField resignFirstResponder];
     return YES;
 }
@@ -48,7 +48,6 @@
 }
 
 -(IBAction)onBackButtonPressed:(id)sender {
-    NSLog(@"Back button pressed");
     [self.myWebView goBack];
 }
 
@@ -66,22 +65,26 @@
 
 - (void) checkStatusForButtons {
     if ([self.myWebView canGoBack]) {
-        NSLog(@"canGoBack");
-        NSLog(@"%hhd", [self.myWebView canGoBack]);
         [self.backButton setEnabled:TRUE];
     }else{
-        NSLog(@"canNotGoBack");
         [self.backButton setEnabled:FALSE];
     }
     if ([self.myWebView canGoForward]) {
-        NSLog(@"canGoForward");
         [self.forwardButton setEnabled:TRUE];
     }else{
-        NSLog(@"canNotGoForward");
         [self.forwardButton setEnabled:FALSE];
     }
 }
 
+-(NSString *) checkUrl:(NSString *)urlString {
+    NSString *prefix = @"http://";
+
+    if (![prefix isEqualToString:[urlString substringToIndex:prefix.length]]) {
+        return [NSString stringWithFormat:@"%@%@", prefix,urlString];
+    } else {
+        return urlString;
+    }
+}
 //-(void)webView:(UIWebView *)webView didFailLoadWithError:(NSError *)error {
 //    UIAlertView *alertView = [[UIAlertView alloc] init];
 //    alertView.title = @"ERROR";
