@@ -13,6 +13,7 @@
 @property (strong, nonatomic) IBOutlet UITextField *myURLTextField;
 @property (strong, nonatomic) IBOutlet UIButton *backButton;
 @property (strong, nonatomic) IBOutlet UIButton *forwardButton;
+@property (strong, nonatomic) IBOutlet UIButton *clearButton;
 @property (nonatomic, assign) CGFloat lastContentOffset;
 
 @end
@@ -57,6 +58,10 @@
     [self.myWebView reload];
 }
 
+-(IBAction)onClearButtonPressed:(id)sender {
+    self.myURLTextField.text = @"";
+}
+
 - (void) checkStatusForButtons {
     if ([self.myWebView canGoBack]) {
         [self.backButton setEnabled:TRUE];
@@ -92,25 +97,19 @@
     if (self.lastContentOffset > scrollView.contentOffset.y) {
         NSLog(@"Scrolling up");
         self.myURLTextField.alpha = 1.0f;
+        self.clearButton.alpha = 1.0f;
     } else if (self.lastContentOffset < scrollView.contentOffset.y) {
         NSLog(@"Scrolling down");
         self.myURLTextField.alpha = 0.0f;
+        self.clearButton.alpha = 0.0f;
     }
     self.lastContentOffset = scrollView.contentOffset.y;
 }
 
-//-(void)scrollViewWillBeginDragging:(UIScrollView *)scrollView {
-//    NSLog(@"View Will Begin Dragging");
-//    self.lastContentOffset = scrollView.contentOffset.y;
-//}
-//
-//-(void)scrollViewDidEndDecelerating:(UIScrollView *)scrollView {
-//    if (self.lastContentOffset < (int)scrollView.contentOffset.y) {
-//        NSLog(@"Moved Up");
-//    } else if (self.lastContentOffset > (int)scrollView.contentOffset.y) {
-//        NSLog(@"Moved Down");
-//    }
-//}
+-(void)webViewDidFinishLoad:(UIWebView *)webView {
+    NSLog(@"Loaded");
+    self.myURLTextField.text = [NSString stringWithFormat:@"%@",webView.request.URL];
+}
 //-(void)webView:(UIWebView *)webView didFailLoadWithError:(NSError *)error {
 //    UIAlertView *alertView = [[UIAlertView alloc] init];
 //    alertView.title = @"ERROR";
