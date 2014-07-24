@@ -8,11 +8,12 @@
 
 #import "ViewController.h"
 
-@interface ViewController () <UIWebViewDelegate, UITextFieldDelegate>
+@interface ViewController () <UIWebViewDelegate, UITextFieldDelegate, UIScrollViewDelegate>
 @property (strong, nonatomic) IBOutlet UIWebView *myWebView;
 @property (strong, nonatomic) IBOutlet UITextField *myURLTextField;
 @property (strong, nonatomic) IBOutlet UIButton *backButton;
 @property (strong, nonatomic) IBOutlet UIButton *forwardButton;
+@property (nonatomic, assign) CGFloat lastContentOffset;
 
 @end
 
@@ -22,6 +23,8 @@
 {
     [super viewDidLoad];
     [self checkStatusForButtons];
+    self.lastContentOffset = 0.0f;
+    self.myWebView.scrollView.delegate = self;
 //    self.homepageUrlString = @"http://www.google.com";
 //    [self loadUrlString:self.homepageUrlString];
 }
@@ -36,15 +39,6 @@
     [self loadUrlString:[self checkUrl:textField.text]];
     [textField resignFirstResponder];
     return YES;
-}
-
--(void)webViewDidStartLoad:(UIWebView *)webView {
-    NSLog(@"Loading...");
-}
-
--(void)webViewDidFinishLoad:(UIWebView *)webView {
-    NSLog(@"Loaded");
-    [self checkStatusForButtons];
 }
 
 -(IBAction)onBackButtonPressed:(id)sender {
@@ -85,6 +79,38 @@
         return urlString;
     }
 }
+
+-(IBAction)showNewFeatures:(id)sender {
+    UIAlertView *alertView = [[UIAlertView alloc] init];
+    alertView.title = @"New Features";
+    alertView.message = @"Coming soon!";
+    alertView.delegate = self;
+    [alertView show];
+}
+
+-(void)scrollViewDidScroll:(UIScrollView *)scrollView {
+    if (self.lastContentOffset > scrollView.contentOffset.y) {
+        NSLog(@"Scrolling up");
+        self.myURLTextField.alpha = 1.0f;
+    } else if (self.lastContentOffset < scrollView.contentOffset.y) {
+        NSLog(@"Scrolling down");
+        self.myURLTextField.alpha = 0.0f;
+    }
+    self.lastContentOffset = scrollView.contentOffset.y;
+}
+
+//-(void)scrollViewWillBeginDragging:(UIScrollView *)scrollView {
+//    NSLog(@"View Will Begin Dragging");
+//    self.lastContentOffset = scrollView.contentOffset.y;
+//}
+//
+//-(void)scrollViewDidEndDecelerating:(UIScrollView *)scrollView {
+//    if (self.lastContentOffset < (int)scrollView.contentOffset.y) {
+//        NSLog(@"Moved Up");
+//    } else if (self.lastContentOffset > (int)scrollView.contentOffset.y) {
+//        NSLog(@"Moved Down");
+//    }
+//}
 //-(void)webView:(UIWebView *)webView didFailLoadWithError:(NSError *)error {
 //    UIAlertView *alertView = [[UIAlertView alloc] init];
 //    alertView.title = @"ERROR";
